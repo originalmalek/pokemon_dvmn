@@ -30,16 +30,14 @@ def add_pokemon(folium_map, lat, lon, image_url=DEFAULT_IMAGE_URL):
 
 def show_all_pokemons(request):
     folium_map = folium.Map(location=MOSCOW_CENTER, zoom_start=12)
-    with open('pokemon_entities/pokemons.json', encoding='utf-8') as database:
-        pokemons = json.load(database)['pokemons']
-    pokemons1 = PokemonEntity.objects.all()
-    # print(pokemons1)
-    for pokemon1 in pokemons1:
-        latitude = pokemon1.lat
-        longitude = pokemon1.lon
-        image_url = request.build_absolute_uri(pokemon1.pokemon.picture.url)
 
-        # print(latitude, longitude, image)
+    pokemons = PokemonEntity.objects.all()
+
+    for pokemon in pokemons:
+        latitude = pokemon.lat
+        longitude = pokemon.lon
+        image_url = request.build_absolute_uri(pokemon.pokemon.picture.url)
+
         add_pokemon(folium_map, latitude, longitude, image_url)
 
     # for pokemon in pokemons:
@@ -50,17 +48,17 @@ def show_all_pokemons(request):
     #             pokemon['img_url']
     #         )
 
-    pokemons_on_page = []
-    for pokemon in pokemons:
-        pokemons_on_page.append({
-            'pokemon_id': pokemon['pokemon_id'],
-            'img_url': pokemon['img_url'],
-            'title_ru': pokemon['title_ru'],
-        })
+    # pokemons_on_page = []
+    # for pokemon in pokemons:
+    #     pokemons_on_page.append({
+    #         'pokemon_id': pokemon['pokemon_id'],
+    #         'img_url': pokemon['img_url'],
+    #         'title_ru': pokemon['title_ru'],
+    #     })
 
     return render(request, 'mainpage.html', context={
         'map': folium_map._repr_html_(),
-        'pokemons': pokemons_on_page,
+        # 'pokemons': pokemons_on_page,
     })
 
 
@@ -68,7 +66,6 @@ def show_pokemon(request, pokemon_id):
     with open('pokemon_entities/pokemons.json', encoding='utf-8') as database:
         pokemons = json.load(database)['pokemons']
 
-    pokemons1 = PokemonEntity.objects.all()
     for pokemon in pokemons:
         if pokemon['pokemon_id'] == int(pokemon_id):
             requested_pokemon = pokemon

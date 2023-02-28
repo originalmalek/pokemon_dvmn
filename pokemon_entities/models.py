@@ -1,5 +1,5 @@
 from django.db import models
-from datetime import datetime
+
 
 class Pokemon(models.Model):
 	title = models.CharField(max_length=200)
@@ -7,6 +7,14 @@ class Pokemon(models.Model):
 	title_jp = models.CharField(max_length=200, blank=True)
 	picture = models.ImageField(upload_to='pokemon_pics', null=True)
 	description = models.TextField(blank=True)
+
+	previous_evolution = models.ForeignKey('self',
+	                                       verbose_name='Из кого эволюционирует',
+	                                       null=True,
+	                                       blank=True,
+	                                       related_name='next_evolutions',
+	                                       on_delete=models.CASCADE)
+
 	def __str__(self):
 		return self.title
 
@@ -25,6 +33,3 @@ class PokemonEntity(models.Model):
 	strength = models.IntegerField(default=0)
 	defence = models.IntegerField(default=0)
 	stamina = models.IntegerField(default=0)
-
-
-

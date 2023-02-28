@@ -50,7 +50,7 @@ def show_all_pokemons(request):
             'img_url': request.build_absolute_uri(pokemon.picture.url),
             'title_ru': pokemon.title,
         })
-
+   
     return render(request, 'mainpage.html', context={
         'map': folium_map._repr_html_(),
         'pokemons': pokemons_on_page,
@@ -58,23 +58,31 @@ def show_all_pokemons(request):
 
 
 def show_pokemon(request, pokemon_id):
-    with open('pokemon_entities/pokemons.json', encoding='utf-8') as database:
-        pokemons = json.load(database)['pokemons']
-
-    for pokemon in pokemons:
-        if pokemon['pokemon_id'] == int(pokemon_id):
-            requested_pokemon = pokemon
-            break
-    else:
+    try:
+        pokemon = Pokemon.objects.get(id=pokemon_id)
+    except Pokemon.DoesNotExist:
         return HttpResponseNotFound('<h1>Такой покемон не найден</h1>')
 
+    pokemon_entities = PokemonEntity.objects.filter(pokemon=pokemon_id,
+                                                 appeared_at__lt=localtime(),
+                                                 disappeared_at__gt=localtime())
+
     folium_map = folium.Map(location=MOSCOW_CENTER, zoom_start=12)
-    for pokemon_entity in requested_pokemon['entities']:
-        add_pokemon(
-            folium_map, pokemon_entity['lat'],
-            pokemon_entity['lon'],
-            pokemon['img_url']
-        )
+    for pokemon_entity in pokemon_entities:
+        latitude = pokemon_entity.lat
+        longitude = pokemon_entity.lon
+        image_url = request.build_absolute_uri(pokemon_entity.pokemon.picture.url)
+
+        add_pokemon(folium_map, latitude, longitude, image_url)
+
+    pokemon = {"pokemon_id": pokemon_id,
+        "title_ru": pokemon.title,
+        "title_en": "Venusaur",
+        "title_jp": "フシギバナ",
+        "description": "покемон двойного травяного и ядовитого типа из первого поколения покемонов. На 32 уровне эволюционирует из Ивизавра. Финальная эволюция травяного стартовика Бульбазавра. Развивается в Мега Венузавра с помощью камня Венусарита.",
+        "img_url": request.build_absolute_uri(pokemon.picture.url),
+
+    }
 
     return render(request, 'pokemon.html', context={
         'map': folium_map._repr_html_(), 'pokemon': pokemon

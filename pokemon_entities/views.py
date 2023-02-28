@@ -79,7 +79,7 @@ def show_pokemon(request, pokemon_id):
         "title_ru": pokemon.title,
         "title_en": "Venusaur",
         "title_jp": "フシギバナ",
-        "description": "покемон двойного травяного и ядовитого типа из первого поколения покемонов. На 32 уровне эволюционирует из Ивизавра. Финальная эволюция травяного стартовика Бульбазавра. Развивается в Мега Венузавра с помощью камня Венусарита.",
+        "description": pokemon.description,
         "img_url": request.build_absolute_uri(pokemon.picture.url),
 
     }

@@ -13,15 +13,14 @@ DEFAULT_IMAGE_URL = (
 )
 
 
-def add_pokemon(folium_map, lat, lon, image_url=DEFAULT_IMAGE_URL):
+def add_pokemon(folium_map, lat, lon, image_url, name):
 	icon = folium.features.CustomIcon(
 		image_url,
 		icon_size=(50, 50),
 	)
 	folium.Marker(
 		[lat, lon],
-		# Warning! `tooltip` attribute is disabled intentionally
-		# to fix strange folium cyrillic encoding bug
+		tooltip=name,
 		icon=icon,
 	).add_to(folium_map)
 
@@ -40,7 +39,7 @@ def show_all_pokemons(request):
 			longitude = pokemon_entity.lon
 			image_url = request.build_absolute_uri(pokemon_entity.pokemon.picture.url)
 
-			add_pokemon(folium_map, latitude, longitude, image_url)
+			add_pokemon(folium_map, latitude, longitude, image_url, pokemon_entity.pokemon.title)
 
 		pokemons_on_page.append({
 			'pokemon_id': pokemon.id,
@@ -99,7 +98,7 @@ def show_pokemon(request, pokemon_id):
 		longitude = pokemon_entity.lon
 		image_url = request.build_absolute_uri(pokemon_entity.pokemon.picture.url)
 
-		add_pokemon(folium_map, latitude, longitude, image_url)
+		add_pokemon(folium_map, latitude, longitude, image_url, pokemon_entity.pokemon.title)
 
 	pokemon = generate_pokemon_info(pokemon, request)
 

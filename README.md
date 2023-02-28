@@ -20,11 +20,25 @@
 
 Скачайте код с GitHub. Затем установите зависимости
 
-```sh
+```
 pip install -r requirements.txt
 ```
 
-Запустите разработческий сервер
+Мигрируйте базу данных
+
+```
+python3 manage.py migrate
+```
+
+Создайте суперпользователя
+
+```
+python3 manage.py createsuperuser
+```
+
+Заполните базу данных покемонами и их местоположением
+
+Запустите сервер
 
 ```sh
 python3 manage.py runserver

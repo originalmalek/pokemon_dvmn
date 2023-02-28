@@ -67,16 +67,16 @@ def generate_pokemon_info(pokemon, request):
 	if next_evolutions.count() > 0:
 		next_evolution = next_evolutions.first()
 		pokemon_info['next_evolution'] = {
-		"title_ru": next_evolution.title,
-		"pokemon_id": next_evolution.id,
-		"img_url": request.build_absolute_uri(next_evolution.picture.url)
-	}
+			"title_ru": next_evolution.title,
+			"pokemon_id": next_evolution.id,
+			"img_url": request.build_absolute_uri(next_evolution.picture.url)
+		}
 
 	if pokemon.previous_evolution:
-		pokemon_info['previous_evolution']= {
-		"title_ru": pokemon.previous_evolution.title,
-		"pokemon_id": pokemon.previous_evolution.id,
-		"img_url": request.build_absolute_uri(pokemon.previous_evolution.picture.url)
+		pokemon_info['previous_evolution'] = {
+			"title_ru": pokemon.previous_evolution.title,
+			"pokemon_id": pokemon.previous_evolution.id,
+			"img_url": request.build_absolute_uri(pokemon.previous_evolution.picture.url)
 		}
 
 	return pokemon_info

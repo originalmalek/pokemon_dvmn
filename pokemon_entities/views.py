@@ -27,21 +27,23 @@ def add_pokemon(folium_map, lat, lon, image_url, name):
 
 def show_all_pokemons(request):
 	folium_map = folium.Map(location=MOSCOW_CENTER, zoom_start=12)
-	pokemons = Pokemon.objects.all()
 
 	pokemons_on_page = []
 	time_now = localtime()
+
+	pokemon_entities = PokemonEntity.objects.filter(appeared_at__lt=time_now,
+	                                                disappeared_at__gt=time_now)
+	for pokemon_entity in pokemon_entities:
+		latitude = pokemon_entity.lat
+		longitude = pokemon_entity.lon
+		image_url = request.build_absolute_uri(pokemon_entity.pokemon.picture.url)
+
+		add_pokemon(folium_map, latitude, longitude, image_url, pokemon_entity.pokemon.title)
+
+	ids_pokemons_on_page = pokemon_entities.values_list('pokemon__id', flat=True).distinct()
+	pokemons = Pokemon.objects.filter(id__in=ids_pokemons_on_page)
+
 	for pokemon in pokemons:
-		pokemon_entities = PokemonEntity.objects.filter(pokemon=pokemon.id,
-		                                                appeared_at__lt=time_now,
-		                                                disappeared_at__gt=time_now)
-		for pokemon_entity in pokemon_entities:
-			latitude = pokemon_entity.lat
-			longitude = pokemon_entity.lon
-			image_url = request.build_absolute_uri(pokemon_entity.pokemon.picture.url)
-
-			add_pokemon(folium_map, latitude, longitude, image_url, pokemon_entity.pokemon.title)
-
 		pokemons_on_page.append({
 			'pokemon_id': pokemon.id,
 			'img_url': request.build_absolute_uri(pokemon.picture.url),
@@ -65,8 +67,8 @@ def generate_pokemon_info(pokemon, request):
 
 	next_evolutions = pokemon.next_evolutions.all()
 
-	if next_evolutions.count() > 0:
-		next_evolution = next_evolutions.first()
+	next_evolution = next_evolutions.first()
+	if next_evolutions:
 		pokemon_info['next_evolution'] = {
 			"title_ru": next_evolution.title,
 			"pokemon_id": next_evolution.id,

@@ -65,10 +65,9 @@ def generate_pokemon_info(pokemon, request):
 	                "img_url": request.build_absolute_uri(pokemon.picture.url),
 	                }
 
-	next_evolutions = pokemon.next_evolutions.all()
+	next_evolution = pokemon.next_evolutions.first()
 
-	next_evolution = next_evolutions.first()
-	if next_evolutions:
+	if next_evolution:
 		pokemon_info['next_evolution'] = {
 			"title_ru": next_evolution.title,
 			"pokemon_id": next_evolution.id,

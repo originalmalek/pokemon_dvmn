@@ -20,7 +20,7 @@ class Pokemon(models.Model):
 
 
 class PokemonEntity(models.Model):
-	pokemon = models.ForeignKey(Pokemon, on_delete=models.CASCADE)
+	pokemon = models.ForeignKey(Pokemon, on_delete=models.CASCADE, verbose_name='Покемон')
 
 	lat = models.FloatField(verbose_name='Широта')
 	lon = models.FloatField(verbose_name='Долгота')
@@ -35,4 +35,4 @@ class PokemonEntity(models.Model):
 	stamina = models.IntegerField(default=0, verbose_name='Выносливость покемона')
 
 	def __str__(self):
-		return self.pokemon
+		return self.pokemon.title

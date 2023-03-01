@@ -3,8 +3,8 @@ from django.db import models
 
 class Pokemon(models.Model):
 	title = models.CharField(max_length=200, verbose_name='Название покемона')
-	title_en = models.CharField(max_length=200, verbose_name='Название анг.')
-	title_jp = models.CharField(max_length=200, verbose_name='Название яп.')
+	title_en = models.CharField(max_length=200, verbose_name='Название анг.', blank=True)
+	title_jp = models.CharField(max_length=200, verbose_name='Название яп.', blank=True)
 	picture = models.ImageField(upload_to='pokemon_pics', verbose_name='Картинка')
 	description = models.TextField(verbose_name='Описание')
 
@@ -33,3 +33,6 @@ class PokemonEntity(models.Model):
 	strength = models.IntegerField(default=0, verbose_name='Сила покемона')
 	defence = models.IntegerField(default=0, verbose_name='Защита покемона')
 	stamina = models.IntegerField(default=0, verbose_name='Выносливость покемона')
+
+	def __str__(self):
+		return self.pokemon
